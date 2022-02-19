@@ -24,10 +24,10 @@ jobs:
         include-prerelease: true
 
     - name: Build service
-      run: dotnet build src/PersonalWeb.Server.sln --configuration Release 
+      run: dotnet build src/chancies.server.sln --configuration Release 
 
     - name: dotnet publish
-      run: dotnet publish src/PersonalWeb.Server.sln -c Release -o ${{env.DOTNET_ROOT}}/output
+      run: dotnet publish src/chancies.server.sln -c Release -o ${{env.DOTNET_ROOT}}/output
 
     - name: Upload server artifact
       uses: actions/upload-artifact@v2
