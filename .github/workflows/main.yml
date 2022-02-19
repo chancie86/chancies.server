@@ -19,4 +19,4 @@ jobs:
         include-prerelease: true
 
     - name: Build service
-      run: dotnet build src/PersonalWeb.Server.sln --configuration Release 
+      run: dotnet build src/chancies.server.sln --configuration Release 
