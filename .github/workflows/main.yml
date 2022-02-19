@@ -22,4 +22,4 @@ jobs:
         include-prerelease: true
 
     - name: Build service
-      run: dotnet build server/PersonalWeb.Server.sln --configuration Release 
+      run: dotnet build src/PersonalWeb.Server.sln --configuration Release 
