@@ -10,7 +10,7 @@ namespace chancies.Server.Api.Permissions
         {
             var types = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(t =>
-                    t.Namespace == "chancies.Api.Permissions"
+                    t.Namespace == "chancies.Server.Api.Permissions"
                         && t.IsClass
                         && !t.IsAbstract
                         && t.IsPublic
