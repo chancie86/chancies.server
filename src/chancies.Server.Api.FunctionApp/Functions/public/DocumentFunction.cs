@@ -12,7 +12,7 @@ using chancies.Server.Api.Controllers.Public.Document.Dto.Extensions;
 using chancies.Server.Blog.Interfaces;
 using chancies.Server.Persistence.Models;
 
-namespace chancies.Server.Api.FunctionApp.Public
+namespace chancies.Server.Api.FunctionApp.Functions.Public
 {
     public class DocumentFunction
     {

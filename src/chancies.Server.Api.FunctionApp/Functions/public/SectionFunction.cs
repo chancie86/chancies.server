@@ -11,7 +11,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
-namespace chancies.Server.Api.FunctionApp.Public
+namespace chancies.Server.Api.FunctionApp.Functions.Public
 {
     public class SectionFunction
     {

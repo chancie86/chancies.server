@@ -1,6 +1,4 @@
-﻿using System.Security.AccessControl;
-
-namespace chancies.Server.Api.Permissions
+﻿namespace chancies.Server.Api.Permissions
 {
     public class Document
         : BaseCrudPermission
