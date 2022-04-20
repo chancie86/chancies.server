@@ -10,13 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '3.1.301'
-        include-prerelease: true
+        dotnet-version: | 
+          3.1.x
+          6.0.x
 
     - name: Build service
-      run: dotnet build src/chancies.server.sln --configuration Release 
+      run: dotnet build src/chancies.server.sln --configuration Release -o ${{env.DOTNET_ROOT}}/output
