@@ -6,48 +6,61 @@ name: Release
 on:
   workflow_dispatch:
 
+env:
+  AZURE_FUNCTIONAPP_NAME: chancies.server   # set this to your application's name
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src'   # set this to the path to your web app project, defaults to the repository root
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Set up .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v2
       with:
-        dotnet-version: '3.1.301'
-        include-prerelease: true
+        dotnet-version: | 
+          3.1.x
+          6.0.x
 
-    - name: Build service
-      run: dotnet build src/chancies.server.sln --configuration Release 
+    - name: Build
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        dotnet build chancies.server.sln --configuration Release -o ./output
+        popd
 
-    - name: dotnet publish
-      run: dotnet publish src/chancies.server.sln -c Release -o ${{env.DOTNET_ROOT}}/output
-
-    - name: Upload server artifact
-      uses: actions/upload-artifact@v2
+    - name: 'Deploy'
+      uses: Azure/functions-action@v1
+      id: fa
       with:
-        name: personalweb-server
-        path: ${{env.DOTNET_ROOT}}/output
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        publish-profile: ${{ secrets.AZURE_FUNCTIONAPP_PUBLISH_PROFILE }}
+    # - name: Upload server artifact
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: personalweb-server
+    #     path: ${{env.DOTNET_ROOT}}/output
 
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: 'production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+  # deploy:
+    
+    # runs-on: windows-latest
+    # needs: build
+    # environment:
+    #   name: 'production'
+    #   url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
-    steps:
-    - name: Download artifact from build job
-      uses: actions/download-artifact@v2
-      with:
-        name: personalweb-server
+    # steps:
+    # - name: Download artifact from build job
+    #   uses: actions/download-artifact@v2
+    #   with:
+    #     name: personalweb-server
 
-    - name: Deploy to Azure Web App
-      id: deploy-to-webapp
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'personalweb-uks-app'
-        publish-profile: ${{ secrets.APPSERVICE_PUBLISH_PROFILE }}
-        package: .
+    # - name: Deploy to Azure Web App
+    #   id: deploy-to-webapp
+    #   uses: azure/webapps-deploy@v2
+    #   with:
+    #     app-name: 'personalweb-uks-app'
+    #     publish-profile: ${{ secrets.APPSERVICE_PUBLISH_PROFILE }}
+    #     package: .

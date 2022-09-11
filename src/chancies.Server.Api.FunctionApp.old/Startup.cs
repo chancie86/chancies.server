@@ -6,6 +6,7 @@ using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using chancies.Server.Api.FunctionApp;
 using chancies.Server.Api.FunctionApp.DependencyInjection;
+using chancies.Server.Api.FunctionApp.Functions;
 using chancies.Server.Auth;
 using chancies.Server.Auth.Config;
 using chancies.Server.Blog;
@@ -52,7 +53,7 @@ namespace chancies.Server.Api.FunctionApp
             // This is a convenient way to register all your function classes at once
             cb
                 .RegisterAssemblyTypes(typeof(Startup).Assembly)
-                .InNamespaceOf<Startup>();
+                .InNamespaceOf<BaseFunction>();
 
             cb.RegisterModule<BlogModule>();
             cb.RegisterModule<PersistenceModule>();

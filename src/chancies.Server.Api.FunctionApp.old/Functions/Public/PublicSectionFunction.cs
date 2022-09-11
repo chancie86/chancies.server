@@ -13,16 +13,16 @@ using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 
 namespace chancies.Server.Api.FunctionApp.Functions.Public
 {
-    public class SectionFunction
+    public class PublicSectionFunction
     {
         private readonly ISectionService _sectionService;
 
-        public SectionFunction(ISectionService sectionService)
+        public PublicSectionFunction(ISectionService sectionService)
         {
             _sectionService = sectionService;
         }
 
-        [FunctionName(nameof(GetSections))]
+        [FunctionName($"{nameof(PublicSectionFunction)}{nameof(GetSections)}")]
         public async Task<ActionResult<IList<SectionDto>>> GetSections(
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/section")]
             HttpRequest req)
@@ -44,7 +44,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
             //return new OkObjectResult(responseMessage);
         }
 
-        [FunctionName(nameof(GetSectionById))]
+        [FunctionName($"{nameof(PublicSectionFunction)}{nameof(GetSectionById)}")]
         public async Task<ActionResult<SectionDto>> GetSectionById(
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/section/{sectionId}")]
             HttpRequest req,

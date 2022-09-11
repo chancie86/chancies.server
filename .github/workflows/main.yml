@@ -5,6 +5,9 @@ on:
     branches:
       - main
 
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './src'   # set this to the path to your web app project, defaults to the repository root
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,4 +23,7 @@ jobs:
           6.0.x
 
     - name: Build service
-      run: dotnet build src/chancies.server.sln --configuration Release -o ${{env.DOTNET_ROOT}}/output
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        dotnet build chancies.server.sln --configuration Release -o ./output
+        popd

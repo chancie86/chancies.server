@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "AdminProxy": {
+      "matchCondition": {
+        "methods": [ "GET" ],
+        "route": "/api/admin/document/{documentId}"
+      },
+      "backendUri": "https://localhost/api/v2/admin/document/{documentId}"
+    }
+  }
+}

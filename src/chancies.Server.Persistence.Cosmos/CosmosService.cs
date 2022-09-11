@@ -46,6 +46,11 @@ namespace chancies.Server.Persistence.Cosmos
 
         public Container GetContainer()
         {
+            if (!_initialised)
+            {
+                throw new InvalidOperationException("Service has not been initialised");
+            }
+
             return _container;
         }
 

@@ -1,25 +1,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Extensions.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using chancies.Server.Api.Controllers.Public.Document.Dto;
 using chancies.Server.Api.Controllers.Public.Document.Dto.Extensions;
 using chancies.Server.Blog.Interfaces;
 using chancies.Server.Persistence.Models;
-using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.Functions.Worker.Http;
 
 namespace chancies.Server.Api.FunctionApp.Functions.Public
 {
-    public class DocumentFunction
+    public class PublicDocumentFunction
     {
         private readonly IDocumentService _documentService;
         private readonly IImageService _imageService;
 
-        public DocumentFunction(
+        public PublicDocumentFunction(
             IDocumentService documentService,
             IImageService imageService)
         {
@@ -27,41 +27,34 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
             _imageService = imageService;
         }
         
-        [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(List)}")]
-        public async Task<IList<DocumentListItemDto>> List(
+        [FunctionName($"{nameof(PublicDocumentFunction)}{nameof(GetDocuments)}")]
+        public async Task<ActionResult<IList<DocumentListItemDto>>> GetDocuments(
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/document")]
-            HttpRequestData req)
+            HttpRequest req)
         {
             return (await _documentService.List()).Select(s => s.ToDocumentListItemDto()).ToList();
         }
 
-        [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(GetDocumentById)}")]
-        public async Task<HttpResponseData> GetDocumentById(
+        [FunctionName($"{nameof(PublicDocumentFunction)}{nameof(GetDocumentById)}")]
+        public async Task<ActionResult<DocumentDto>> GetDocumentById(
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/document/{documentId}")]
-            HttpRequestData req,
+            HttpRequest req,
             Guid documentId)
         {
             var document = await _documentService.Get(documentId);
 
             if (!document.Published)
             {
-                return req.CreateResponse(HttpStatusCode.Forbidden);
+                return new ForbidResult();
             }
 
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "application/json; charset=utf-8");
-
-            var dto = document.ToDocumentDto();
-            var json = JsonSerializer.Serialize(dto);
-            await response.WriteStringAsync(json);
-
-            return response;
+            return document.ToDocumentDto();
         }
 
-        [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(GetDocumentImages)}")]
-        public async Task<IList<ImageReference>> GetDocumentImages(
+        [FunctionName($"{nameof(PublicDocumentFunction)}{nameof(GetDocumentImages)}")]
+        public async Task<ActionResult<IList<ImageReference>>> GetDocumentImages(
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/document/{documentId}/images")]
-            HttpRequestData req,
+            HttpRequest req,
             Guid documentId)
         {
             return (await _imageService.List(documentId)).ToList();

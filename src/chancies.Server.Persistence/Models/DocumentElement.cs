@@ -1,10 +1,10 @@
 ﻿using System;
 using chancies.Server.Persistence.Converters;
-using Newtonsoft.Json;
 
 namespace chancies.Server.Persistence.Models
 {
-    [JsonConverter(typeof(DocumentElementConverter))]
+    [Newtonsoft.Json.JsonConverter(typeof(DocumentElementConverter))]
+    [System.Text.Json.Serialization.JsonConverter(typeof(DocumentElementConverter2))]
     public class DocumentElement
     {
         public DocumentElement()
