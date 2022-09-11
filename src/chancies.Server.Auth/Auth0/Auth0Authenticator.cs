@@ -50,7 +50,7 @@ namespace chancies.Server.Auth.Auth0
         /// This method has an asynchronous signature, but usually completes synchronously.
         /// </summary>
         /// <param name="authorizationValue">The authorization header value.</param>
-        private async Task<(ClaimsPrincipal User, SecurityToken ValidatedToken)> AuthenticateAsync(string authorizationValue, params string[] permissions)
+        public async Task<(ClaimsPrincipal user, SecurityToken validatedToken)> AuthenticateAsync(string authorizationValue, params string[] permissions)
         {
             (ClaimsPrincipal user, SecurityToken token) result;
 
@@ -85,11 +85,11 @@ namespace chancies.Server.Auth.Auth0
         /// </summary>
         /// <param name="request">The HTTP request.</param>
         /// <param name="permissions">The required permissions</param>
-        public Task<(ClaimsPrincipal User, SecurityToken ValidatedToken)> AuthenticateAsync(
+        public Task<(ClaimsPrincipal user, SecurityToken validatedToken)> AuthenticateAsync(
             HttpRequest request,
             params string[] permissions) =>
             AuthenticateAsync(request.Headers.Authorization, permissions);
-
+        
         private string GetToken(string authorizationValue)
         {
             var split = authorizationValue.Split(' ');

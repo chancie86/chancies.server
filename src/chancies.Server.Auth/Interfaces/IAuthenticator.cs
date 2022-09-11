@@ -7,8 +7,12 @@ namespace chancies.Server.Auth.Interfaces
 {
     public interface IAuthenticator
     {
-        Task<(ClaimsPrincipal User, SecurityToken ValidatedToken)> AuthenticateAsync(
+        Task<(ClaimsPrincipal user, SecurityToken validatedToken)> AuthenticateAsync(
             HttpRequest request,
+            params string[] permissions);
+
+        Task<(ClaimsPrincipal user, SecurityToken validatedToken)> AuthenticateAsync(
+            string authorizationValue,
             params string[] permissions);
     }
 }

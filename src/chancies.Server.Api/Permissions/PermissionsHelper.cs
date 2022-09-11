@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace chancies.Server.Api.Permissions
 {
-    internal static class PermissionsHelper
+    public static class PermissionsHelper
     {
         public static IList<string> GetPermissions()
         {

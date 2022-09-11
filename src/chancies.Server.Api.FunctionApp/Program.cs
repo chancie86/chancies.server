@@ -1,14 +1,13 @@
-using System.Configuration;
-using Microsoft.Azure.Functions.Worker.Configuration;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using chancies.Server.Api.FunctionApp.Extensions;
+using chancies.Server.Api.FunctionApp.Middleware;
 using chancies.Server.Auth.Config;
 using chancies.Server.Common.Extensions;
 using chancies.Server.Persistence.Cosmos.Config;
 using chancies.Server.Persistence.Cosmos.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Azure.Functions.Worker;
 
 namespace chancies.Server.Api.FunctionApp
 {
@@ -17,7 +16,10 @@ namespace chancies.Server.Api.FunctionApp
         public static async Task Main()
         {
             var host = new HostBuilder()
-                .ConfigureFunctionsWorkerDefaults()
+                .ConfigureFunctionsWorkerDefaults((IFunctionsWorkerApplicationBuilder builder) =>
+                {
+                    builder.UseMiddleware<AuthenticationMiddleware>();
+                })
                 .ConfigureServices(services =>
                 {
                     // Register configuration

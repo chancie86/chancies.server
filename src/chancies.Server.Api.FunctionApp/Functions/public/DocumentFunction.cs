@@ -29,7 +29,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
         
         [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(List)}")]
         public async Task<IList<DocumentListItemDto>> List(
-            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/document")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/document")]
             HttpRequestData req)
         {
             return (await _documentService.List()).Select(s => s.ToDocumentListItemDto()).ToList();
@@ -37,7 +37,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
 
         [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(GetDocumentById)}")]
         public async Task<HttpResponseData> GetDocumentById(
-            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/document/{documentId}")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/document/{{documentId}}")]
             HttpRequestData req,
             Guid documentId)
         {
@@ -60,7 +60,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
 
         [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(GetDocumentImages)}")]
         public async Task<IList<ImageReference>> GetDocumentImages(
-            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/document/{documentId}/images")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/document/{{documentId}}/images")]
             HttpRequestData req,
             Guid documentId)
         {

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
+using chancies.Server.Auth.Auth0;
 using chancies.Server.Auth.Config;
+using chancies.Server.Auth.Interfaces;
 using chancies.Server.Auth.Policies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +42,12 @@ namespace chancies.Server.Auth.Extensions
             return self
                 .UseAuthentication()
                 .UseAuthorization();
+        }
+
+        public static IServiceCollection AddChanciesFunctionAuthenticator(this IServiceCollection self)
+        {
+            return self
+                .AddScoped<IAuthenticator, Auth0Authenticator>();
         }
 
         private static IServiceCollection AddPolicies(this IServiceCollection self, string domain, IList<string> scopes)
