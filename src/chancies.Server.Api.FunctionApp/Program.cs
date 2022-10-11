@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,7 +19,9 @@ namespace chancies.Server.Api.FunctionApp
             var host = new HostBuilder()
                 .ConfigureFunctionsWorkerDefaults((IFunctionsWorkerApplicationBuilder builder) =>
                 {
-                    builder.UseMiddleware<AuthenticationMiddleware>();
+                    builder
+                        .UseMiddleware<ExceptionHandlerMiddleware>()
+                        .UseMiddleware<AuthenticationMiddleware>();
                 })
                 .ConfigureServices(services =>
                 {

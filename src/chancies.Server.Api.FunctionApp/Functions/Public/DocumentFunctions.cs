@@ -14,12 +14,12 @@ using Microsoft.Azure.Functions.Worker.Http;
 
 namespace chancies.Server.Api.FunctionApp.Functions.Public
 {
-    public class DocumentFunction
+    public class DocumentFunctions
     {
         private readonly IDocumentService _documentService;
         private readonly IImageService _imageService;
 
-        public DocumentFunction(
+        public DocumentFunctions(
             IDocumentService documentService,
             IImageService imageService)
         {
@@ -27,7 +27,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
             _imageService = imageService;
         }
         
-        [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(List)}")]
+        [Function($"{nameof(Public)}_{nameof(DocumentFunctions)}_{nameof(List)}")]
         public async Task<IList<DocumentListItemDto>> List(
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/document")]
             HttpRequestData req)
@@ -35,7 +35,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
             return (await _documentService.List()).Select(s => s.ToDocumentListItemDto()).ToList();
         }
 
-        [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(GetDocumentById)}")]
+        [Function($"{nameof(Public)}_{nameof(DocumentFunctions)}_{nameof(GetDocumentById)}")]
         public async Task<HttpResponseData> GetDocumentById(
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/document/{{documentId}}")]
             HttpRequestData req,
@@ -58,7 +58,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
             return response;
         }
 
-        [Function($"{nameof(Public)}{nameof(DocumentFunction)}{nameof(GetDocumentImages)}")]
+        [Function($"{nameof(Public)}_{nameof(DocumentFunctions)}_{nameof(GetDocumentImages)}")]
         public async Task<IList<ImageReference>> GetDocumentImages(
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/document/{{documentId}}/images")]
             HttpRequestData req,

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using chancies.Server.Common.Exceptions;
 using chancies.Server.Persistence.Cosmos.Interfaces;
@@ -31,7 +32,19 @@ namespace chancies.Server.Persistence.Cosmos
 
         public async Task Delete(TId id)
         {
-            await _container.DeleteItemAsync<TDocument>(id.ToString(), _partitionKey);
+            try
+            {
+                await _container.DeleteItemAsync<TDocument>(id.ToString(), _partitionKey);
+            }
+            catch (CosmosException ce)
+            {
+                if (ce.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundException(typeof(TId).Name, id.ToString());
+                }
+
+                throw;
+            }
         }
 
         public async Task<TDocument> Read(TId id)
@@ -77,7 +90,19 @@ namespace chancies.Server.Persistence.Cosmos
 
         public async Task Update(TDocument document)
         {
-            await _container.ReplaceItemAsync(document, document.Id.ToString(), _partitionKey);
+            try
+            {
+                await _container.ReplaceItemAsync(document, document.Id.ToString(), _partitionKey);
+            }
+            catch (CosmosException ce)
+            {
+                if (ce.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundException(typeof(TDocument).Namespace, document.Id.ToString());
+                }
+
+                throw;
+            }
         }
     }
 }

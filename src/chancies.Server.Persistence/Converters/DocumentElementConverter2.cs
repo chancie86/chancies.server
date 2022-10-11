@@ -11,27 +11,6 @@ namespace chancies.Server.Persistence.Converters
     {
         public override DocumentElement Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            //var element = JsonSerializer.Deserialize<JsonElement>(ref reader);
-
-            //if (!element.TryGetProperty(nameof(DocumentElement.Type), out var typeElement))
-            //{
-            //    throw new JsonException($"{nameof(DocumentElement.Type)} not found in json");
-            //}
-
-            ////var typeValue = jObject[nameof(DocumentElement.Type).ToLowerInvariant()].Value<string>();
-            //var type = Enum.Parse<DocumentElementType>(typeValue);
-
-            //switch (type)
-            //{
-            //    case DocumentElementType.Html:
-            //        return new HtmlDocumentElement();
-            //    case DocumentElementType.Images:
-            //        return new ImagesDocumentElement();
-            //    case DocumentElementType.Video:
-            //        return new VideoDocumentElement();
-            //    default:
-            //        throw new InvalidDataException($"Type not specified");
-            //}
             throw new NotImplementedException();
         }
 

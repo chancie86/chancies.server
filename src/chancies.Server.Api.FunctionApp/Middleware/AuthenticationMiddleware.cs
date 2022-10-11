@@ -3,6 +3,7 @@ using System.Linq;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 using chancies.Server.Api.FunctionApp.Extensions;
+using chancies.Server.Auth.Exceptions;
 using chancies.Server.Auth.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Azure.Functions.Worker;
@@ -26,7 +27,7 @@ namespace chancies.Server.Api.FunctionApp.Middleware
 
             if (requestData == null)
             {
-                throw new AuthenticationException("Authorization header missing");
+                throw new UnauthorizedException("Authorization header missing");
             }
 
             var authAttribute = context.GetAttribute<AuthorizeAttribute>();

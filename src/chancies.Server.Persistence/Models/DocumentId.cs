@@ -7,7 +7,7 @@ namespace chancies.Server.Persistence.Models
 {
     [TypeConverter(typeof(UnderlyingTypeConverter<DocumentId, string>))]
     [JsonConverter(typeof(IdGuidConverter<DocumentId>))]
-    public struct DocumentId
+    public readonly struct DocumentId
         : IEquatable<DocumentId>
     {
         private readonly Guid _value;

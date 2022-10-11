@@ -20,15 +20,15 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
             _sectionService = sectionService;
         }
 
-        [Function($"{nameof(Public)}{nameof(SectionFunctions)}{nameof(List)}")]
-        public async Task<IList<SectionDto>> List([HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/section")] HttpRequestData req)
+        [Function($"{nameof(Public)}_{nameof(SectionFunctions)}_{nameof(List)}")]
+        public async Task<IList<SectionDto>> List([HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/section")] HttpRequestData req)
         {
             return (await _sectionService.List()).Select(s => s.ToDto()).ToList();
         }
 
-        [Function($"{nameof(Public)}{nameof(SectionFunctions)}{nameof(GetSectionById)}")]
+        [Function($"{nameof(Public)}_{nameof(SectionFunctions)}_{nameof(GetSectionById)}")]
         public async Task<SectionDto> GetSectionById(
-            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = "public/section/{sectionId}")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/section/{{sectionId}}")]
             HttpRequestData req,
             Guid sectionId)
         {
