@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure;
 using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Specialized;
+using chancies.Server.Common.Exceptions;
 using chancies.Server.Persistence.Cosmos.Config;
 using chancies.Server.Persistence.Cosmos.Interfaces;
 using chancies.Server.Persistence.Models;
@@ -32,7 +34,20 @@ namespace chancies.Server.Persistence.Cosmos.Implementations
             var blobUri = new Uri($"{BaseUrl}/{_storageConfig.ImageContainer}/{path}");
             var credential = await GetCredential();
             var blobClient = new BlobClient(blobUri, credential);
-            await blobClient.UploadAsync(fileStream);
+
+            try
+            {
+                await blobClient.UploadAsync(fileStream);
+            }
+            catch (RequestFailedException rfe)
+            {
+                if (rfe.Status == 409)
+                {
+                    throw new DuplicateObjectException("Blob", blobUri.AbsolutePath);
+                }
+
+                throw;
+            }
         }
 
         public async Task<IList<ImageReference>> List(string prefix)

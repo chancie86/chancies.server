@@ -28,9 +28,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
 
         [Function($"{nameof(Public)}_{nameof(SectionFunctions)}_{nameof(GetSectionById)}")]
         public async Task<SectionDto> GetSectionById(
-            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/section/{{sectionId}}")]
-            HttpRequestData req,
-            Guid sectionId)
+            [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Get), Route = $"{Constants.ApiVersion}/public/section/{{sectionId}}")]            Guid sectionId)
         {
             return (await _sectionService.Get(sectionId)).ToDto();
         }

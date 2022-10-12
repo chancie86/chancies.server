@@ -11,7 +11,16 @@ namespace chancies.Server.Persistence.Converters
     {
         public override DocumentElement Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            throw new NotImplementedException();
+            var doc = JsonDocument.ParseValue(ref reader);
+            var typeElement = doc.RootElement.GetProperty(nameof(DocumentElement.Type));
+
+            return typeElement.GetString() switch
+            {
+                nameof(DocumentElementType.Html) => JsonSerializer.Deserialize<HtmlDocumentElement>(doc.RootElement.GetRawText()),
+                nameof(DocumentElementType.Images) => JsonSerializer.Deserialize<ImagesDocumentElement>(doc.RootElement.GetRawText()),
+                nameof(DocumentElementType.Video) => JsonSerializer.Deserialize<VideoDocumentElement>(doc.RootElement.GetRawText()),
+                _ => throw new InvalidOperationException()
+            };
         }
 
         public override void Write(Utf8JsonWriter writer, DocumentElement value, JsonSerializerOptions options)

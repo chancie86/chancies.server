@@ -49,15 +49,27 @@ namespace chancies.Server.Persistence.Cosmos
 
         public async Task<TDocument> Read(TId id)
         {
-            var response = await _container.ReadItemAsync<TDocument>(id.ToString(), _partitionKey);
-            var document = response.Resource;
-
-            if (document == null)
+            try
             {
-                throw new NotFoundException(typeof(TDocument).Name);
-            }
+                var response = await _container.ReadItemAsync<TDocument>(id.ToString(), _partitionKey);
+                var document = response.Resource;
 
-            return document;
+                if (document == null)
+                {
+                    throw new NotFoundException(typeof(TDocument).Name);
+                }
+
+                return document;
+            }
+            catch (CosmosException ce)
+            {
+                if (ce.StatusCode == HttpStatusCode.NotFound)
+                {
+                    throw new NotFoundException(typeof(TId).Name, id.ToString());
+                }
+
+                throw;
+            }
         }
 
         public virtual async Task<IList<TList>> List()

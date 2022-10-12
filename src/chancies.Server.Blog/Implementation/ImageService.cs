@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using chancies.Server.Blog.Interfaces;
+using chancies.Server.Common.Exceptions;
 using chancies.Server.Persistence.Models;
 using chancies.server.Persistence.Repositories;
 using chancies.Server.Persistence.Repositories;
@@ -37,7 +39,15 @@ namespace chancies.Server.Blog.Implementation
 
         public async Task Delete(DocumentId documentId, string filePath)
         {
-            _ = await _documentRepository.Read(documentId);
+            var doc = await _documentRepository.Read(documentId);
+            var images = doc.Elements.Where(x => x.Type == DocumentElementType.Images).Cast<ImagesDocumentElement>();
+            var inUse = images.Any(x => x.Images.Any(y => string.Equals(y.Path, filePath, StringComparison.Ordinal)));
+
+            if (inUse)
+            {
+                throw new InUseException("Cannot delete the file because it is referenced by the document");
+            }
+
             await _imageRepository.Delete($"{documentId}/{filePath}");
         }
     }
