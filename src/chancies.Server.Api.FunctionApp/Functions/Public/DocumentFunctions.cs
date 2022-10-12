@@ -18,13 +18,16 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
     {
         private readonly IDocumentService _documentService;
         private readonly IImageService _imageService;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         public DocumentFunctions(
             IDocumentService documentService,
-            IImageService imageService)
+            IImageService imageService,
+            JsonSerializerOptions jsonSerializerOptions)
         {
             _documentService = documentService;
             _imageService = imageService;
+            _jsonSerializerOptions = jsonSerializerOptions;
         }
         
         [Function($"{nameof(Public)}_{nameof(DocumentFunctions)}_{nameof(List)}")]
@@ -52,7 +55,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Public
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
             var dto = document.ToDocumentDto();
-            var json = JsonSerializer.Serialize(dto);
+            var json = JsonSerializer.Serialize(dto, _jsonSerializerOptions);
             await response.WriteStringAsync(json);
 
             return response;

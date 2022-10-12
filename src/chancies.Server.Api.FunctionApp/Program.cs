@@ -1,5 +1,8 @@
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using Azure.Core.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using chancies.Server.Api.FunctionApp.Extensions;
@@ -16,12 +19,23 @@ namespace chancies.Server.Api.FunctionApp
     {
         public static async Task Main()
         {
+            var defaultJsonSerializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = false,
+                PropertyNameCaseInsensitive = true
+            };
+
             var host = new HostBuilder()
                 .ConfigureFunctionsWorkerDefaults((IFunctionsWorkerApplicationBuilder builder) =>
                 {
                     builder
                         .UseMiddleware<ExceptionHandlerMiddleware>()
                         .UseMiddleware<AuthenticationMiddleware>();
+                    
+                }, workerOptions =>
+                {
+                    workerOptions.Serializer = new JsonObjectSerializer(defaultJsonSerializerOptions);
                 })
                 .ConfigureServices(services =>
                 {
@@ -30,6 +44,7 @@ namespace chancies.Server.Api.FunctionApp
                         .AddConfigurationOptions<AzureConfig>("Azure")
                         .AddConfigurationOptions<Auth0Config>("Auth0");
 
+                    services.AddSingleton(defaultJsonSerializerOptions);
                     services.AddFunctionServices();
                 })
                 .Build();

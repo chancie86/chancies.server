@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -15,7 +12,6 @@ using chancies.Server.Common.Extensions;
 using chancies.Server.Persistence.Models;
 using HttpMultipartParser;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -26,16 +22,16 @@ namespace chancies.Server.Api.FunctionApp.Functions.Admin
     {
         private readonly IDocumentService _documentService;
         private readonly IImageService _imageService;
-        private readonly ILogger<DocumentFunctions> _logger;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         public DocumentFunctions(
             IDocumentService documentService,
             IImageService imageService,
-            ILogger<DocumentFunctions> logger)
+            JsonSerializerOptions jsonSerializerOptions)
         {
             _documentService = documentService;
             _imageService = imageService;
-            _logger = logger;
+            _jsonSerializerOptions = jsonSerializerOptions;
         }
 
         [Authorize(Api.Permissions.Document.Read)]
@@ -51,7 +47,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Admin
             response.Headers.Add("Content-Type", "application/json; charset=utf-8");
 
             var dto = document.ToDocumentDto();
-            var json = JsonSerializer.Serialize(dto);
+            var json = JsonSerializer.Serialize(dto, _jsonSerializerOptions);
             await response.WriteStringAsync(json);
 
             return response;
@@ -73,7 +69,7 @@ namespace chancies.Server.Api.FunctionApp.Functions.Admin
             [HttpTrigger(AuthorizationLevel.Anonymous, nameof(HttpMethod.Put), Route = $"{Constants.ApiVersion}/admin/document/{{documentId}}")] HttpRequestData req,
             Guid documentId)
         {
-            var payload = req.ReadBody<CreateDocumentDto>();
+            var payload = req.ReadBody<UpdateDocumentDto>();
             await _documentService.Update(new Document
             {
                 Id = documentId,
